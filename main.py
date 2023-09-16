@@ -16,11 +16,12 @@ nest_asyncio.apply()
 
 app = Flask(__name__)
 model = GPT4All("ggml-model-gpt4all-falcon-q4_0.bin")
+city = 'Waakirchen'
+api = '19db1b8cf86382e5a6d546c5390a8613'
 
 current_text = ''
 
-API_KEY = "19db1b8cf86382e5a6d546c5390a8613"
-BASE_URL = 'http://api.openweathermap.org/data/2.5/weather?q=Waakirchen,de&units=metric&appid=' + API_KEY
+BASE_URL = 'http://api.openweathermap.org/data/2.5/weather?q={city},de&units=metric&appid=' + api
 
 
 def translate_text(text):
@@ -31,7 +32,6 @@ def translate_text(text):
     except Exception as e:
         print(f"Translation error: {e}")
         return text
-
 
 
 def get_weather_data():
@@ -82,8 +82,7 @@ def handle_special_commands(translated_text):
         "what's the weather forecast", "how's the sky looking",
         "should I take an umbrella", "is it sunny out",
         "weather update", "current weather", "is it cloudy",
-        "is it windy", "weather status", "give me a weather report", "how is the weather", "how is the weather today",
-        "what is the weather in waakirchen"
+        "is it windy", "weather status", "give me a weather report", "how is the weather", "how is the weather today"
     ]
 
     # Commands for temperature request
@@ -127,7 +126,7 @@ def handle_special_commands(translated_text):
 
     for command in time_commands:
         if command in translated_text.lower():
-            current_time = datetime.datetime.now().strftime('%H:%M:%S')  # Format: HH:MM:SS
+            current_time = datetime.datetime.now().strftime('%H:%M')  # Format: HH:MM
             return random.choice(time_responses).format(time=current_time)
 
     for command in date_commands:
@@ -236,4 +235,4 @@ def chat():
 
 if __name__ == '__main__':
     context = ('cert.pem', 'key.pem')
-    app.run(ssl_context=context)
+    app.run(host="", port=443, ssl_context=context)
