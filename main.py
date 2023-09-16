@@ -21,7 +21,7 @@ api = '19db1b8cf86382e5a6d546c5390a8613'
 
 current_text = ''
 
-BASE_URL = 'http://api.openweathermap.org/data/2.5/weather?q={city},de&units=metric&appid=' + api
+BASE_URL = 'http://api.openweathermap.org/data/2.5/weather?q=' + city + ',de&units=metric&appid=' + api
 
 
 def translate_text(text):
@@ -92,7 +92,7 @@ def handle_special_commands(translated_text):
         "is it chilly outside", "temperature check", "how's the temperature",
         "is it freezing", "is it boiling", "temperature outside",
         "how's the temp", "what's the temp like", "is it hot or cold",
-        "give me the temperature", "tell me how warm it is", "how many degrees do we have"
+        "give me the temperature", "tell me how warm it is", "how many degrees do we have", "how many degrees"
     ]
 
     # Responses for general weather
@@ -135,19 +135,20 @@ def handle_special_commands(translated_text):
             return random.choice(date_responses).format(date=current_date)
 
     for command in weather_commands:
-        data = get_weather_data()
-        if not data:
-            return "Sorry, I couldn't fetch the weather data right now."
-        description = data['weather'][0]['description']
         if command in translated_text.lower():
+            data = get_weather_data()  # Fetch data only if the command matches
+            if not data:
+                return "Sorry, I couldn't fetch the weather data right now."
+            description = data['weather'][0]['description']
             return random.choice(weather_responses).format(description=description)
 
+        # Checking for temperature commands
     for command in temperature_commands:
-        data = get_weather_data()
-        if not data:
-            return "Sorry, I couldn't fetch the temperature data right now."
-        temp = data['main']['temp']
         if command in translated_text.lower():
+            data = get_weather_data()  # Fetch data only if the command matches
+            if not data:
+                return "Sorry, I couldn't fetch the temperature data right now."
+            temp = data['main']['temp']
             return random.choice(temp_responses).format(temp=temp)
 
     return None

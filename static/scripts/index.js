@@ -40,13 +40,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (finalTranscript) {
         // Only send if there's text after the activation word
-        console.log("POST TO API:", finalTranscript);
+        console.log("Input:", finalTranscript);
         audio1.play();
         circleOuter.style.display = "block";
         circleOuter1.style.display = "block";
 
         // Send the finalTranscript to your API
-        fetch("https://127.0.0.1:5000/chat", {
+        fetch("https://127.0.0.1:443/chat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
