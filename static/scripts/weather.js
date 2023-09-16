@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   }
 
   function weatherDetails(info) {
-    if (info.cod == "404") {
+    if (info.cod === "404") {
       alert("Invalid city name");
     } else {
       const city = info.name;
@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       let dayNight = info.weather[0].icon.slice(-1); // Extracts 'd' for day or 'n' for night
 
-      if (id == 800) {
-        wIcon.src = `../static/icons/clear-${dayNight == 'd' ? 'day' : 'night'}.svg`;
+      if (id === 800) {
+        wIcon.src = `../static/icons/clear-${dayNight === 'd' ? 'day' : 'night'}.svg`;
       } else if (id >= 210 && id <= 212) {
         wIcon.src = "../static/icons/thunderstorms.svg";
       } else if ((id >= 200 && id <= 202) || (id >= 221 && id <= 232)) {
