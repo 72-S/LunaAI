@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let isActivated = false;
   let finalTranscript = "";
   const audio1 = new Audio("../../static/audio/audio1.mp3");
-  const audio2 = new Audio("../../static/audio/audio2.mp3");
   const audio3 = new Audio("../../static/audio/audio3.mp3");
   let typewriterContainer = document.getElementById("output");
   let circleOuter = document.getElementById("circleOuter");
@@ -32,7 +31,6 @@ document.addEventListener("DOMContentLoaded", function () {
       audio3.play();
       isActivated = true;
       finalTranscript = "";
-      interimTranscript = ""; // Reset the transcript after activation
       return;
     }
 
@@ -48,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         circleOuter1.style.display = "block";
 
         // Send the finalTranscript to your API
-        fetch("https://192.168.178.31:443/chat", {
+        fetch("https://127.0.0.1:5000/chat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -57,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
           .then((response) => {
             if (!response.ok) {
-              throw new Error("Netzwerkantwort war nicht ok");
+              throw new Error("Error from server");
             }
             return response.json();
           })
@@ -67,10 +65,10 @@ document.addEventListener("DOMContentLoaded", function () {
               output = output.replace("?", "");
           }
             
-            console.log("Vom Server empfangener Text:", output);
+            console.log("Output:", output);
             visible.style.display = "block";
             function addButton() {
-              var button = document.getElementById("showResponce");
+              const button = document.getElementById("showResponce");
               button.classList.add("active");
             }
             addButton()
@@ -78,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let audio = new Audio("data:audio/mp3;base64," + data.audio);
             audio.addEventListener('ended', function(){
               function resetButton() {
-                var button = document.getElementById("showResponce");
+                const button = document.getElementById("showResponce");
                 button.classList.remove("active");
               }
                 visible.style.display = "none";
@@ -90,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
           })
           .catch((error) => {
             console.error(
-              "Es gab ein Problem mit dem Fetch-Operation:",
+              "Error from server: ",
               error.message
             );
           });
@@ -102,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   recognition.onerror = function (event) {
-    console.error("Fehler bei der Spracherkennung:", event.error);
+    console.error("Error:", event.error);
   };
 
 
