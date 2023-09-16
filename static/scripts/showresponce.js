@@ -45,6 +45,7 @@ let startY = 0;
 let offsetX = 0;
 let offsetY = 0;
 
+// Touch Events
 document.getElementById('output').addEventListener('touchstart', function(e) {
     if (document.getElementById('showResponce').classList.contains('active')) {
         isDragging = true;
@@ -65,5 +66,32 @@ document.getElementById('output').addEventListener('touchmove', function(e) {
 });
 
 document.getElementById('output').addEventListener('touchend', function() {
+    isDragging = false;
+});
+
+// Mouse Events
+document.getElementById('output').addEventListener('mousedown', function(e) {
+    if (document.getElementById('showResponce').classList.contains('active')) {
+        isDragging = true;
+        startX = e.clientX - offsetX;
+        startY = e.clientY - offsetY;
+    }
+});
+
+document.getElementById('output').addEventListener('mousemove', function(e) {
+    if (isDragging) {
+        e.preventDefault();
+        offsetX = e.clientX - startX;
+        offsetY = e.clientY - startY;
+        this.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    }
+});
+
+document.getElementById('output').addEventListener('mouseup', function() {
+    isDragging = false;
+});
+
+// Dieser Event-Listener sorgt dafür, dass das Dragging stoppt, auch wenn die Maus das Element verlässt
+document.addEventListener('mouseup', function() {
     isDragging = false;
 });

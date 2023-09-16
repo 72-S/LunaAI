@@ -21,7 +21,7 @@ api = '19db1b8cf86382e5a6d546c5390a8613'
 
 current_text = ''
 
-BASE_URL = 'http://api.openweathermap.org/data/2.5/weather?q=' + city + ',de&units=metric&appid=' + api
+BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + ',de&units=metric&appid=' + api
 
 
 def translate_text(text):
