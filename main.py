@@ -10,7 +10,6 @@ import tempfile
 from deep_translator import GoogleTranslator
 import random
 import requests
-import json
 import datetime
 
 nest_asyncio.apply()
@@ -34,22 +33,6 @@ def translate_text(text):
         return text
 
 
-def set_led_color(color):
-    url = "http://home.local/json/state"
-    data = {
-        "seg": [
-            {
-                "col": [color]
-            }
-        ]
-    }
-    headers = {'Content-type': 'application/json'}
-    response = requests.post(url, data=json.dumps(data), headers=headers)
-    if response.status_code == 200:
-        print(f"LED set to {color}")
-    else:
-        print(f"Failed to set the LED to {color}", response.status_code, response.text)
-
 
 def get_weather_data():
     response = requests.get(BASE_URL)
@@ -60,102 +43,6 @@ def get_weather_data():
 
 
 def handle_special_commands(translated_text):
-    light_off_commands = [
-        "light off", "lights off", "turn the lights off", "switch off the lights",
-        "shut off the lights", "kill the lights", "dim the lights", "lights out",
-        "turn off the light", "shut down the lights", "turn off the leds", "leds off",
-        "shut off the leds", "kill the leds", "led off"
-    ]
-    light_off_responses = [
-        "The light has been turned off.", "Lights are now off.",
-        "I've turned off the lights for you.", "Sure, the lights are off now.",
-        "Done, the lights are off.", "Okay, I've shut off the lights for you.",
-        "The LEDs are now off.", "LEDs have been turned off.",
-        "Alright, turning off the lights.", "Your wish is my command, lights are off."
-    ]
-
-    light_on_commands = [
-        "light on", "lights on", "turn the lights on", "switch on the lights",
-        "turn on the lights", "illuminate the room", "lights up", "brighten the room",
-        "turn on the light", "power on the lights", "turn on the leds", "leds on",
-        "power on the leds", "illuminate with leds", "led on", "switch on the light"
-    ]
-    light_on_responses = [
-        "The light has been turned on.", "Lights are now on.",
-        "I've turned on the lights for you.", "Sure, the lights are on now.",
-        "Done, the lights are on.", "Okay, I've powered on the lights for you.",
-        "The LEDs are now on.", "LEDs have been turned on.",
-        "Alright, turning on the lights.", "Your wish is my command, lights are on."
-    ]
-    white_commands = [
-        "white light", "change to white", "set light to white", "turn the lights white",
-        "switch to white light", "make the light white", "lights white please", "want white illumination",
-        "white illumination", "give me white light", "i want white color", "set leds to white",
-        "white leds", "change leds to white", "make the leds white", "LEDs white"
-    ]
-    purple_commands = [
-        "purple light", "change to purple", "set light to purple", "turn the lights purple",
-        "switch to purple light", "make the light purple", "lights purple please", "want purple illumination",
-        "purple illumination", "give me purple light", "i want purple color", "set leds to purple",
-        "purple leds", "change leds to purple", "make the leds purple", "LEDs purple"
-    ]
-    blue_commands = [
-        "blue light", "change to blue", "set light to blue", "turn the lights blue",
-        "switch to blue light", "make the light blue", "lights blue please", "want blue illumination",
-        "blue illumination", "give me blue light", "i want blue color", "set leds to blue",
-        "blue leds", "change leds to blue", "make the leds blue", "LEDs blue"
-    ]
-    red_commands = [
-        "red light", "change to red", "set light to red", "turn the lights red",
-        "switch to red light", "make the light red", "lights red please", "want red illumination",
-        "red illumination", "give me red light", "i want red color", "set leds to red",
-        "red leds", "change leds to red", "make the leds red", "LEDs red"
-    ]
-    green_commands = [
-        "green light", "change to green", "set light to green", "turn the lights green",
-        "switch to green light", "make the light green", "lights green please", "want green illumination",
-        "green illumination", "give me green light", "i want green color", "set leds to green",
-        "green leds", "change leds to green", "make the leds green", "LEDs green"
-    ]
-    white_responses = [
-        "The light has been set to white.", "Lights are now white.",
-        "I've changed the lights to white for you.", "Sure, the lights are white now.",
-        "Done, the lights are white.", "Okay, I've set the lights to white for you.",
-        "The LEDs are now white.", "LEDs have been set to white.",
-        "Alright, turning the lights white.", "Your wish is my command, lights are white."
-    ]
-
-    purple_responses = [
-        "The light has been set to purple.", "Lights are now purple.",
-        "I've changed the lights to purple for you.", "Sure, the lights are purple now.",
-        "Done, the lights are purple.", "Okay, I've set the lights to purple for you.",
-        "The LEDs are now purple.", "LEDs have been set to purple.",
-        "Alright, turning the lights purple.", "Your wish is my command, lights are purple."
-    ]
-
-    blue_responses = [
-        "The light has been set to blue.", "Lights are now blue.",
-        "I've changed the lights to blue for you.", "Sure, the lights are blue now.",
-        "Done, the lights are blue.", "Okay, I've set the lights to blue for you.",
-        "The LEDs are now blue.", "LEDs have been set to blue.",
-        "Alright, turning the lights blue.", "Your wish is my command, lights are blue."
-    ]
-
-    red_responses = [
-        "The light has been set to red.", "Lights are now red.",
-        "I've changed the lights to red for you.", "Sure, the lights are red now.",
-        "Done, the lights are red.", "Okay, I've set the lights to red for you.",
-        "The LEDs are now red.", "LEDs have been set to red.",
-        "Alright, turning the lights red.", "Your wish is my command, lights are red."
-    ]
-
-    green_responses = [
-        "The light has been set to green.", "Lights are now green.",
-        "I've changed the lights to green for you.", "Sure, the lights are green now.",
-        "Done, the lights are green.", "Okay, I've set the lights to green for you.",
-        "The LEDs are now green.", "LEDs have been set to green.",
-        "Alright, turning the lights green.", "Your wish is my command, lights are green."
-    ]
     time_commands = [
         "what time is it", "can you tell me the time", "what's the current time",
         "how late is it", "tell me the time", "time please", "how late do we have",
@@ -238,47 +125,6 @@ def handle_special_commands(translated_text):
         "You might find it to be {temp}°C outside."
     ]
 
-    for command in light_off_commands:
-        if command in translated_text.lower():
-            url = "http://home.local/win&T=0"
-            response = requests.get(url)
-            if response.status_code != 200:
-                print("Failed to turn off LED")
-            return random.choice(light_off_responses)
-
-    for command in light_on_commands:
-        if command in translated_text.lower():
-            url = "http://home.local/win&T=1"
-            response = requests.get(url)
-            if response.status_code != 200:
-                print("Failed to turn on LED")
-            return random.choice(light_on_responses)
-
-    for command in white_commands:
-        if command in translated_text.lower():
-            set_led_color([255, 255, 255, 0])
-            return random.choice(white_responses)
-
-    for command in purple_commands:
-        if command in translated_text.lower():
-            set_led_color([255, 0, 255, 0])
-            return random.choice(purple_responses)
-
-    for command in blue_commands:
-        if command in translated_text.lower():
-            set_led_color([0, 0, 255, 0])
-            return random.choice(blue_responses)
-
-    for command in red_commands:
-        if command in translated_text.lower():
-            set_led_color([255, 0, 0, 0])
-            return random.choice(red_responses)
-
-    for command in green_commands:
-        if command in translated_text.lower():
-            set_led_color([0, 255, 0, 0])
-            return random.choice(green_responses)
-
     for command in time_commands:
         if command in translated_text.lower():
             current_time = datetime.datetime.now().strftime('%H:%M:%S')  # Format: HH:MM:SS
@@ -320,14 +166,14 @@ def generate_text():
 
 
 def format_output(text):
-    # Entfernen von '*'
+    # Remove '*'
     text = text.replace('*', '-')
 
-    # Entfernen von 'today?' am Anfang des Textes
+    # Remove "today?" from the beginning of the text
     if text.startswith('  today?'):
         text = text[len('today?'):].strip()
 
-    lines = text.split('\n', 1)  # Teilt den Text in zwei Teile: den ersten Absatz und den Rest
+    lines = text.split('\n', 1)  # Split into two lines
     if len(lines) > 1:
         text = lines[1].strip()
 
@@ -371,7 +217,7 @@ def chat():
         current_text = text
         generated_text = generate_text()
 
-        # Formatieren Sie den generierten Text
+        # Format the output
         formatted_text = format_output(generated_text)
 
         loop = asyncio.get_event_loop()
@@ -390,4 +236,4 @@ def chat():
 
 if __name__ == '__main__':
     context = ('cert.pem', 'key.pem')
-    app.run(host='192.168.178.31', port=443, ssl_context=context)
+    app.run(ssl_context=context)
