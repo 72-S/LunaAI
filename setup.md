@@ -45,7 +45,7 @@ For Red Hat/Fedora-based distributions:
   ```
 
 ## 2. Running main.py
-After Python is installed, navigate to the directory where main.py is present.
+After Python is installed, open your console or terminal and navigate to the directory where `main.py` is present.
 - You can run the script using:
   ```bash
   python3 main.py
