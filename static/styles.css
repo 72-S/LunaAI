@@ -1,0 +1,439 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  background-color: rgb(252, 252, 252);
+  background-image: url("../static/images/blue.jpeg");
+  font-weight: lighter;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  user-select: none;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  animation-name: glitch;
+  animation-duration: 1s;
+}
+
+.center h3 {
+  font-size: 160%;
+}
+
+.circle1 {
+  border-radius: 50%;
+  width: 210px;
+  height: 210px;
+  background-color: #01314c71;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  animation: pulse 3s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  transform: rotate(45deg);
+  filter: drop-shadow(0 0 10px #0077c9);
+}
+
+.circle2 {
+  border-radius: 50%;
+  width: 180px;
+  height: 180px;
+  background-color: #0079c900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  animation: pulse 3s ease-in-out infinite;
+  animation-delay: -1.2s;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  transform: rotate(45deg) translate(-50px, 50px);
+  border: 1px solid white;
+}
+
+.circle3 {
+  border-radius: 50%;
+  width: 160px;
+  height: 160px;
+  background-color: #002439;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  animation: pulse 5s ease-in-out infinite;
+  animation-delay: -3s;
+  filter: drop-shadow(0 0 10px #0077c9);
+}
+
+#circleOuter {
+  border-radius: 100%;
+  width: 230px;
+  height: 230px;
+  background-color: rgba(255, 255, 255, 0);
+  border: 1px solid white;
+  position: relative;
+  transform: rotate(-180deg);
+  animation: rotate-counter 5s infinite;
+  animation-direction: alternate;
+  -webkit-mask: linear-gradient(
+    to left,
+    transparent 50%,
+    rgb(255, 255, 255) 50%
+  );
+  mask: linear-gradient(to left, transparent 50%, rgb(255, 255, 255) 50%);
+  display: none;
+}
+
+#circleOuter1 {
+  border-radius: 100%;
+  width: 150px;
+  height: 150px;
+  background-color: rgba(255, 255, 255, 0);
+  border: 1px solid white;
+  position: relative;
+  transform: rotate(-180deg);
+  animation: rotate 5s infinite;
+  animation-direction: alternate;
+  -webkit-mask: linear-gradient(
+    to left,
+    transparent 50%,
+    rgb(255, 255, 255) 50%
+  );
+  mask: linear-gradient(to left, transparent 50%, rgb(255, 255, 255) 50%);
+  display: none;
+}
+
+@keyframes rotate-counter {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-180deg);
+  }
+}
+
+@keyframes rotate-counter1 {
+  from {
+    transform: rotate(-180deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+h3 {
+  color: white;
+  font-size: 32px;
+}
+
+@keyframes rotate-clock {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  80% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+#responce {
+  display: none;
+}
+
+.centerBottom {
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+
+.borderbox {
+  background-color: #003f6670;
+  color: white;
+  opacity: 1;
+  border-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/4273/brace.svg)
+    70 70;
+  border-style: inset;
+  border-width: 15px;
+  padding: 0;
+  margin: 0;
+}
+
+
+.righttop {
+  position: absolute;
+  top: 7%;
+  right: 8%;
+  color: white;
+  font-weight: lighter;
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+#time {
+  font-size: 35px;
+  font-weight: lighter;
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+#date {
+  font-size: 15px;
+  font-weight: lighter;
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.slidercontainer {
+  position: absolute;
+  top: calc(50vh - 192px);
+  left: 10px;
+  width: 70px;
+  height: 400px;
+  background-color: #002439;
+  box-shadow: 0 0 7px 1px rgba(60, 60, 60, 0.4);
+  border-radius: 15px;
+  background-image: linear-gradient(
+    to top,
+    #fff 50%,
+    #002439 50%
+  );
+}
+
+.slidertrack {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.sliderthumb {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 0 7px 1px rgba(60, 60, 60, 0);
+}
+
+.frame {
+  height: calc(100% - 20px);
+  width: calc(100% - 20px);
+  border: none;
+  margin: 10px;
+}
+
+/* Weather Widget */
+
+.weather-widget .wrapper {
+  position: absolute;
+  right: 2%;
+  bottom: 2%;
+  width: 250px;
+  background: #3534346c;
+  border-radius: 7px;
+  background: rgb(0, 36, 57, 0.9);
+  box-shadow: 0 0 7px 1px rgba(60, 60, 60, 0);
+}
+
+.weather-widget .wrapper header {
+  display: flex;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-color);
+  padding: 8px 7.5px;
+  align-items: center;
+  border-bottom: 1px solid #56666efd;
+  color: white;
+  justify-content: center;
+}
+
+.weather-widget .weather-part {
+  display: flex;
+  margin: 15px 0 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+}
+
+.weather-widget .weather-part img {
+  max-width: 130px;
+}
+
+.weather-widget .weather-part .temp {
+  display: flex;
+  font-weight: 500;
+  font-size: 44px;
+}
+
+.weather-widget .weather-part .temp .numb {
+  font-weight: 600;
+}
+
+.weather-widget .weather-part .temp .deg {
+  font-size: 30px;
+  display: block;
+  margin: 5px 2.5px 0 0;
+}
+
+.weather-widget .weather-part .weather {
+  font-size: 15px;
+  text-align: center;
+  margin: -2.5px 10px 7.5px;
+}
+
+.weather-widget .weather-part .location {
+  display: flex;
+  font-size: 15px;
+  padding: 0 10px;
+  text-align: center;
+  margin-bottom: 15px;
+  align-items: flex-start;
+}
+
+.weather-widget .location i {
+  font-size: 11px;
+  margin: 2px 2.5px 0 0;
+}
+
+.weather-widget .weather-part .bottom-details {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  border-top: 1px solid #56666efd;
+}
+
+.weather-widget .bottom-details .column {
+  display: flex;
+  width: 100%;
+  padding: 7.5px 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.weather-widget .column i {
+  color: var(--secondary-color);
+  font-size: 27.5px;
+}
+
+.weather-widget .column.humidity {
+  border-left: 1px solid #56666efd;
+}
+
+.weather-widget .column .details {
+  margin-left: 1.5px;
+}
+
+.weather-widget .details .temp,
+.weather-widget .humidity span {
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: -1.5px;
+}
+
+.weather-widget .details .temp .deg {
+  margin: 0;
+  font-size: 12.5px;
+  padding: 0 1px 0 0.5px;
+}
+
+.weather-widget .column .details p {
+  font-size: 10px;
+  margin-top: -3px;
+}
+
+.weather-widget .humidity i {
+  font-size: 27.5px;
+}
+#video {
+  position: absolute;
+  opacity: 0;
+}
+
+#showResponce {
+  position: absolute;
+  top: calc(50vh + 218px); /* 400px (Slider-Höhe) + 10px (oben) + 8px (Abstand) */
+  left: 10px;
+  padding: 5px 10px;
+  background-color: white;
+  color: #002439;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  height: 70px;
+  width: 70px;
+  box-shadow: 0 0 7px 1px rgba(60, 60, 60, 0.4);
+  transition: background-color 0.2s, color 0.2s, transform 0.2s;
+}
+
+#showResponce.active {
+  background-color: #002439;
+  color: white; 
+}
+
+@keyframes scaleButton {
+  0% {
+      transform: scale(1);
+  }
+  50% {
+      transform: scale(0.95);
+  }
+  100% {
+      transform: scale(1);
+  }
+}
+
+#showResponce.pressed {
+  animation: scaleButton 0.4s forwards;
+}
+
