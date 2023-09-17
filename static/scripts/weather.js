@@ -5,7 +5,23 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const wIcon = weatherPart.querySelector("img");
 
   let api;
-  let apiKey = "b190a0605344cc4f3af08d0dd473dd25";
+  let apiKey;
+  let city;
+
+  function loadConfig() {
+    return fetch('../static/config.json')
+        .then(response => response.json())
+        .then(data => {
+          let header = document.querySelector('header');
+          header.innerText = data.city;
+          city = data.city;
+          apiKey = data.api;
+          requestApi(city);
+        })
+        .catch(error => {
+          console.error('Error loading the config:', error);
+        });
+  }
 
   function requestApi(city) {
     api = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
@@ -72,10 +88,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
   }
 
   // Call requestApi with a default city
-  requestApi("Waakirchen");
+  loadConfig();
 
   // Then call requestApi every 7 minutes
   setInterval(function () {
-    requestApi("Waakirchen");
+    requestApi(city);
   }, 15 * 60 * 1000); // 7 minutes in milliseconds
 });

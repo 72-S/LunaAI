@@ -1,10 +1,19 @@
 import os
 import subprocess
 import json
+import pkg_resources
 
+
+
+def is_package_installed(package_name):
+    """Überprüft, ob ein Python-Paket bereits installiert ist."""
+    try:
+        pkg_resources.get_distribution(package_name)
+        return True
+    except pkg_resources.DistributionNotFound:
+        return False
 
 def install_packages():
-    global package
     packages = [
         'Flask',
         'gpt4all',
@@ -14,13 +23,16 @@ def install_packages():
         'requests'
     ]
 
-    try:
-        for package in packages:
-            subprocess.check_call(['pip', 'install', package])
-        print("All packages installed successfully!")
-    except subprocess.CalledProcessError as e:
-        print(f"Error installing {package}.")
-        print(str(e))
+    for package in packages:
+        if not is_package_installed(package):
+            try:
+                subprocess.check_call(['pip', 'install', package])
+                print(f"{package} installed successfully!")
+            except subprocess.CalledProcessError as e:
+                print(f"Error installing {package}.")
+                print(str(e))
+        else:
+            print(f"{package} is already installed.")
 
 def config():
     # Eingabeaufforderungen
@@ -36,6 +48,7 @@ def config():
 
     # Pfad zum Verzeichnis der firebase.js Datei
     firebase_js_directory = "static/scripts"
+    config_json_directory = "static"
 
     # Daten für config.json vorbereiten und schreiben
     config_data = {
@@ -43,7 +56,9 @@ def config():
         "api": openweather_api
     }
 
-    with open('config.json', 'w') as config_json_file:
+    config_json_path = f"{config_json_directory}/config.json"
+
+    with open(config_json_path, 'w') as config_json_file:
         json.dump(config_data, config_json_file, indent=4)
 
     # Daten für firebase.js vorbereiten und schreiben
