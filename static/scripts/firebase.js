@@ -3,7 +3,7 @@ let firebaseConfig = {
     apiKey: "s",
     authDomain: "s",
     projectId: "s",
-    storageBucket: "ssss",
+    storageBucket: "s",
     messagingSenderId: "s",
     appId: "s",
     measurementId: "s",
