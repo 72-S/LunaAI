@@ -11,13 +11,21 @@ from deep_translator import GoogleTranslator
 import random
 import requests
 import datetime
+import json
 
 nest_asyncio.apply()
 
+
+def load_config():
+    with open('config.json', 'r') as f:
+        return json.load(f)
+
+
+config = load_config()
 app = Flask(__name__)
 model = GPT4All("ggml-model-gpt4all-falcon-q4_0.bin")
-city = 'Waakirchen'
-api = '19db1b8cf86382e5a6d546c5390a8613'
+city = config['city']
+api = config['api']
 
 current_text = ''
 
