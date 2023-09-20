@@ -247,7 +247,7 @@ h3 {
   left: 0;
   right: 0;
   height: 40px;
-  background-color: red;
+  background-color: transparent;
   cursor: pointer;
   border-radius: 50%;
   box-shadow: 0 0 7px 1px rgba(60, 60, 60, 0);
