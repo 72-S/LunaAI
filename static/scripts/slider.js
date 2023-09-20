@@ -14,8 +14,6 @@ window.onload = () => {
       currentValue += increment;
       sliderContainer.style.backgroundImage = `linear-gradient(to top, #fff ${currentValue * 100}%, #002439 0%)`;
       requestAnimationFrame(smoothIncrement);
-    } else {
-      console.log("Zielwert erreicht!");
     }
   }
   async function updateSliderValue() {
