@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   let api;
   let apiKey;
   let city;
-
+  let country;
   function loadConfig() {
     return fetch('../static/config.json')
         .then(response => response.json())
@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           header.innerText = data.city;
           city = data.city;
           apiKey = data.api;
+          country = data.country;
           requestApi(city);
         })
         .catch(error => {
@@ -24,7 +25,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   }
 
   function requestApi(city) {
-    api = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+    api = `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&units=metric&appid=${apiKey}`;
     fetchData();
   }
 

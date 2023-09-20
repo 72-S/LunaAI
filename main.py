@@ -12,7 +12,7 @@ import random
 import requests
 import datetime
 import json
-import firebase
+
 
 nest_asyncio.apply()
 
@@ -27,10 +27,15 @@ app = Flask(__name__)
 model = GPT4All("ggml-model-gpt4all-falcon-q4_0.bin")
 city = config['city']
 api = config['api']
+country = config['country']
+temperature = 0
 
 current_text = ''
 
-BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + ',de&units=metric&appid=' + api
+BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + ',' + country + '&units=metric&appid=' + api
+
+
+
 
 
 def translate_text(text):
@@ -45,6 +50,7 @@ def translate_text(text):
 
 def get_weather_data():
     response = requests.get(BASE_URL)
+    print(response.status_code)
     if response.status_code == 200:
         return response.json()
     else:
@@ -169,7 +175,7 @@ def generate_text():
     response = handle_special_commands(translated_text)
     if response:
         return response
-    generated_text = model.generate(translated_text, temp=0.6, max_tokens=1000)
+    generated_text = model.generate(translated_text, temp=temperature, max_tokens=1000)
     print(generated_text)
     return generated_text
 

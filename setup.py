@@ -84,9 +84,11 @@ def generate_self_signed_cert():
 
 def config():
     city = input("Enter your city: ")
+    country = input("Enter your country: ")
     openweather_api = input("Enter your OpenWeatherMap API key: ")
     apiKey = input("Enter your Firebase apiKey: ")
     authDomain = input("Enter your Firebase authDomain: ")
+    databaseURL = input("Enter your Firebase databaseURL: ")
     projectId = input("Enter your Firebase projectId: ")
     storageBucket = input("Enter your Firebase storageBucket: ")
     messagingSenderId = input("Enter your Firebase messagingSenderId: ")
@@ -98,7 +100,17 @@ def config():
 
     config_data = {
         "city": city,
-        "api": openweather_api
+        "country": country,
+        "api": openweather_api,
+        "apiKey": apiKey,
+        "authDomain": authDomain,
+        "databaseURL": databaseURL,
+        "projectId": projectId,
+        "storageBucket": storageBucket,
+        "messagingSenderId": messagingSenderId,
+        "appId": appId,
+        "measurementId": measurementId
+
     }
 
     config_json_path = f"{config_json_directory}/config.json"

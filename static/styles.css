@@ -87,6 +87,11 @@ body {
   transform: rotate(-180deg);
   animation: rotate-counter 5s infinite;
   animation-direction: alternate;
+    -webkit-mask: linear-gradient(
+            to left,
+            transparent 50%,
+            rgb(255, 255, 255) 50%
+    );
   mask: linear-gradient(to left, transparent 50%, rgb(255, 255, 255) 50%);
   display: none;
 }
@@ -101,6 +106,11 @@ body {
   transform: rotate(-180deg);
   animation: rotate 5s infinite;
   animation-direction: alternate;
+  -webkit-mask: linear-gradient(
+          to left,
+          transparent 50%,
+          rgb(255, 255, 255) 50%
+  );
   mask: linear-gradient(to left, transparent 50%, rgb(255, 255, 255) 50%);
   display: none;
 }

@@ -2,7 +2,7 @@ import {db, ref, set, get} from "./firebase.js";
 window.onload = () => {
   const sliderContainer = document.querySelector(".slidercontainer");
   const slider = document.querySelector(".sliderthumb");
-
+  updateSliderValue();
   let isDragging = false;
   let startY;
   let currentValue = 0;
@@ -91,6 +91,6 @@ window.onload = () => {
   document.addEventListener("mousemove", performDrag);
   document.addEventListener("touchmove", performDrag, {passive: false});
 
-  updateSliderValue();
+
 
 }
