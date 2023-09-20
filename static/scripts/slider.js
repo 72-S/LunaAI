@@ -1,3 +1,4 @@
+import {db, ref, set} from "./firebase.js";
 window.onload = () => {
   const sliderContainer = document.querySelector(".slidercontainer");
   const slider = document.querySelector(".sliderthumb");
@@ -10,8 +11,18 @@ window.onload = () => {
     startY = event.clientY || event.touches[0].clientY;
   }
 
+  function saveValue(dataValue) {
+    const dbRef = ref(db, 'TEMP');
+    set(dbRef, dataValue)
+  }
   function stopDrag() {
     isDragging = false;
+    let bottom = parseInt(slider.style.bottom) || 0;
+    let value = bottom / (sliderContainer.clientHeight - slider.clientHeight);
+    let temp = value.toFixed(2);
+    saveValue(temp)
+    console.log(temp)
+
   }
 
   function performDrag(event) {
@@ -42,10 +53,6 @@ window.onload = () => {
     let trackHeight = sliderContainer.offsetHeight;
     let progressHeight = value * trackHeight;
     let perc = (progressHeight / trackHeight) * 100;
-    let temp = (progressHeight / trackHeight);
-    temp = temp.toFixed(2);
-    const ref = db.ref("TEMP");
-    ref.set(temp);
     sliderContainer.style.backgroundImage = `linear-gradient(to top, #fff ${perc}%, #002439 0%)`;
   }
 
