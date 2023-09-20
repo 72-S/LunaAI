@@ -13,7 +13,6 @@ import requests
 import datetime
 import json
 
-
 nest_asyncio.apply()
 
 
@@ -35,7 +34,26 @@ current_text = ''
 BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + ',' + country + '&units=metric&appid=' + api
 
 
+class FirebaseRealtimeDB:
+    def __init__(self, config_file):
+        with open(config_file, 'r') as file:
+            self.config = json.load(file)
+        self.database_url = self.config["databaseURL"]
+        self.update_global_temperature()
 
+    def read_data(self, path):
+        url = f"{self.database_url}/{path}.json"
+        response = requests.get(url)
+        return response.json()
+
+    def update_global_temperature(self):
+        global temperature
+        temp_value = self.read_data("TEMP")
+        if temp_value:
+            temperature = float(temp_value) * 2.5
+        else:
+            print("TEMP not found in Firebase.")
+            temperature = 0
 
 
 def translate_text(text):
@@ -171,10 +189,13 @@ def handle_special_commands(translated_text):
 
 def generate_text():
     global current_text
+    global temperature
     translated_text = translate_text(current_text)
     response = handle_special_commands(translated_text)
     if response:
         return response
+    firebase_db = FirebaseRealtimeDB('./static/config.json')
+    print(f"Current temperature: {temperature}")
     generated_text = model.generate(translated_text, temp=temperature, max_tokens=1000)
     print(generated_text)
     return generated_text
