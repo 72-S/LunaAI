@@ -229,11 +229,7 @@ h3 {
   background-color: #002439;
   box-shadow: 0 0 7px 1px rgba(60, 60, 60, 0.4);
   border-radius: 15px;
-  background-image: linear-gradient(
-    to top,
-    #fff 50%,
-    #002439 50%
-  );
+  background-image: linear-gradient(to top, #fff 1%, #002439 0%);
 }
 
 .slidertrack {

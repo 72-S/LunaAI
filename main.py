@@ -12,6 +12,7 @@ import random
 import requests
 import datetime
 import json
+import firebase
 
 nest_asyncio.apply()
 
