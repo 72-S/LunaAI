@@ -1,19 +1,47 @@
-import {db, ref, set} from "./firebase.js";
+import {db, ref, set, get} from "./firebase.js";
 window.onload = () => {
   const sliderContainer = document.querySelector(".slidercontainer");
   const slider = document.querySelector(".sliderthumb");
 
   let isDragging = false;
   let startY;
+  let currentValue = 0;
+  let targetValue;
+  const increment = 0.05;
 
+  function smoothIncrement() {
+    if (currentValue < targetValue) {
+      currentValue += increment;
+      sliderContainer.style.backgroundImage = `linear-gradient(to top, #fff ${currentValue * 100}%, #002439 0%)`;
+      requestAnimationFrame(smoothIncrement);
+    } else {
+      console.log("Zielwert erreicht!");
+    }
+  }
+  async function updateSliderValue() {
+    const dbRef = ref(db, "TEMP");
+
+    const snapshot = await get(dbRef);
+
+    if (snapshot.exists()) {
+      const value = snapshot.val();
+      targetValue = value;
+      const thumbPosition = value * (sliderContainer.clientHeight + 0.5 - slider.clientHeight);
+      slider.style.bottom = `${thumbPosition}px`;
+      smoothIncrement();
+    } else {
+      console.log("No Data were Found.");
+    }
+  }
   function startDrag(event) {
     isDragging = true;
     startY = event.clientY || event.touches[0].clientY;
   }
 
   function saveValue(dataValue) {
+    const floatValue = parseFloat(dataValue);
     const dbRef = ref(db, 'TEMP');
-    set(dbRef, dataValue)
+    set(dbRef, floatValue);
   }
   function stopDrag() {
     isDragging = false;
@@ -44,7 +72,7 @@ window.onload = () => {
       let value =
           bottom / (sliderContainer.clientHeight - slider.clientHeight);
 
-      // Update the slider progress
+
       updateSliderProgress(value);
     }
   }
@@ -64,5 +92,7 @@ window.onload = () => {
 
   document.addEventListener("mousemove", performDrag);
   document.addEventListener("touchmove", performDrag, {passive: false});
+
+  updateSliderValue();
 
 }

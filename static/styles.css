@@ -229,7 +229,8 @@ h3 {
   background-color: #002439;
   box-shadow: 0 0 7px 1px rgba(60, 60, 60, 0.4);
   border-radius: 15px;
-  background-image: linear-gradient(to top, #fff 1%, #002439 0%);
+  background-image: linear-gradient(to top, #fff 0%, #002439 0%);
+  transition: background 0.3s ease-out;
 }
 
 .slidertrack {
@@ -246,7 +247,7 @@ h3 {
   left: 0;
   right: 0;
   height: 40px;
-  background-color: transparent;
+  background-color: red;
   cursor: pointer;
   border-radius: 50%;
   box-shadow: 0 0 7px 1px rgba(60, 60, 60, 0);
