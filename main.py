@@ -31,7 +31,7 @@ temperature = 0
 
 current_text = ''
 
-BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + ',' + country + '&units=metric&appid=' + api
+BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + ',&units=metric&appid=' + api
 
 
 class FirebaseRealtimeDB:
