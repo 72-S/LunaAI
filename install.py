@@ -273,6 +273,7 @@ def finish_setup():
 
     #you can close the window
     close_page.pack()
+    app.destroy()
 
 
 ctk.set_appearance_mode("dark")
