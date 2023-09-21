@@ -1,12 +1,10 @@
-import tkinter as tk
-import customtkinter as ctk
 import os
 import subprocess
-import json
 import pkg_resources
-
+import sys
 
 country = "DE"
+
 
 def is_package_installed(package_name):
     try:
@@ -23,19 +21,31 @@ def install_packages():
         'edge_tts',
         'nest_asyncio',
         'deep_translator',
-        'requests'
+        'requests',
+        'cryptography',
+        'tkinter',
+        'customtkinter'
     ]
 
     for package in packages:
         if not is_package_installed(package):
             try:
-                subprocess.check_call(['pip', 'install', package])
+                subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
                 print(f"{package} installed successfully!")
             except subprocess.CalledProcessError as e:
                 print(f"Error installing {package}.")
                 print(str(e))
         else:
             print(f"{package} is already installed.")
+
+
+install_packages()
+
+
+import tkinter as tk
+import customtkinter as ctk
+import json
+import pkg_resources
 
 
 def generate_self_signed_cert():
@@ -45,7 +55,6 @@ def generate_self_signed_cert():
     from cryptography.hazmat.primitives.asymmetric import rsa
     from cryptography.hazmat.primitives import serialization
     import datetime
-
 
     private_key = rsa.generate_private_key(
         public_exponent=65537,
@@ -87,8 +96,8 @@ def generate_self_signed_cert():
 
 
 def save_config():
-    firebase_js_directory = "static/scripts"
-    config_json_directory = "static"
+    firebase_js_directory = "/static/scripts"
+    config_json_directory = "/static"
 
     config_data = {
         "city": cityinput.get(),
@@ -134,21 +143,7 @@ export {{ db, ref, set, get }};
     with open(js_file_path, "w") as file:
         file.write(js_content)
 
-def main():
-    system = os.name
-    if system == 'posix':  # Linux or Mac
-        print("Detected a Linux/Mac system.")
-        install_packages()
-    elif system == 'nt':  # Windows
-        print("Detected a Windows system.")
-        install_packages()
-    else:
-        print("Unsupported operating system detected.")
 
-    if not is_package_installed('cryptography'):
-        subprocess.check_call(['pip', 'install', 'cryptography'])
-
-    generate_self_signed_cert()
 
 
 
@@ -269,9 +264,9 @@ def finish_setup():
     # Elfte Seite ausblenden
     eleventh_page.pack_forget()
     save_config()
-    main()
+    generate_self_signed_cert()
 
-    #you can close the window
+    # you can close the window
     close_page.pack()
     app.destroy()
 
@@ -464,11 +459,10 @@ back_button10 = ctk.CTkButton(eleventh_page, text="Back", width=350, height=50,
                               command=lambda: [eleventh_page.pack_forget(), tenth_page.pack()])
 back_button10.pack(padx=10, pady=10)
 
-#close window
+# close window
 close_page = tk.Frame(app)
 close_page.configure(bg="#242424")
 title12 = ctk.CTkLabel(close_page, text="You can close the Window now", font=("Helvetica", 18))
 title12.pack(padx=10, pady=150)
-
 
 app.mainloop()
