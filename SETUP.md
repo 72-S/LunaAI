@@ -1,4 +1,4 @@
-# LunaAi - Setup Guide
+# LunaAI - Setup Guide
 
 ## Firebase Setup
 
@@ -37,4 +37,4 @@
 3. **Run Start Script**
    - Click on the `start.bat` file to launch the project.
 
-Good luck with LunaAi!
+Good luck with LunaAI!
