@@ -1,4 +1,4 @@
-# LunaAi
+# LunaAI
 
 LunaAI is a sophisticated AI-driven solution designed to streamline various tasks and provide intelligent insights. Built with the power of cutting-edge technologies, LunaAI aims to revolutionize the way we interact with digital platforms.
 
