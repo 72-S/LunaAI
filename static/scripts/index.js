@@ -23,8 +23,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (
-      (interimTranscript.includes("hey Jarvis") ||
-        interimTranscript.includes("Jarvis")) &&
+      (interimTranscript.includes("hey Luna") ||
+        interimTranscript.includes("Luna")) &&
       !isActivated
     ) {
       console.log("Speak Now!");

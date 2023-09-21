@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   }
 
   function requestApi(city) {
-    api = `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&units=metric&appid=${apiKey}`;
+    api = `https://api.openweathermap.org/data/2.5/weather?q=${city},&units=metric&appid=${apiKey}`;
     fetchData();
   }
 
