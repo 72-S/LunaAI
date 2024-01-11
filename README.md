@@ -18,6 +18,8 @@ LunaAI is a sophisticated AI-driven solution designed to streamline various task
 
 - **Open Source and Extensible**: LunaAI is built on top of open-source technologies, including gpt4all and edge_tts. This ensures transparency, reliability, and the ability for the community to contribute and enhance its capabilities
 
+- **Runs completly Local**
+  
 ## Getting Started
 
 To get started with LunaAI, follow the [setup guide](SETUP.md) provided in the repository. This guide will walk you through the process of setting up Firebase, retrieving API keys, and launching the application
