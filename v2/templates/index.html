@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KI-Assistent</title>
+</head>
+<body>
+<h1>KI-Assistent</h1>
+<input type="text" id="promptInput" placeholder="Gib hier deine Frage ein...">
+<input type="checkbox" id="includeVideoCheckbox" checked> Video einschließen
+<button onclick="generateResponse()">Antwort generieren</button>
+<div id="loader" style="display: none;"></div>
+<p id="responseText"></p>
+<video id="video" playsInline style="display:block;"></video>
+<canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+<audio id="audioPlayer" controls style="display:none;"></audio>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        let localMediaStream = null; // Hält den Stream
+
+        // Funktion zum Starten des Videos
+        function startVideo() {
+            navigator.mediaDevices.getUserMedia({video: true})
+                .then(stream => {
+                    video.srcObject = stream;
+                    localMediaStream = stream; // Stream speichern, um später darauf zuzugreifen
+                    video.play(); // Video abspielen
+                })
+                .catch(console.error);
+        }
+
+        window.generateResponse = async function () {
+            document.getElementById('loader').style.display = 'block';
+            const prompt = document.getElementById('promptInput').value;
+            let image = '';
+
+            // Überprüfe, ob der Stream läuft und die Checkbox markiert ist, bevor der Frame aufgenommen wird
+            if (document.getElementById('includeVideoCheckbox').checked && localMediaStream) {
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                image = canvas.toDataURL('image/png');
+            }
+
+            // API-Anfrage senden
+            const response = await fetch('http://127.0.0.1:5000/api/post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({prompt: prompt, image_base64: image}),
+            });
+            document.getElementById('loader').style.display = 'none';
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                document.getElementById('responseText').innerText = data.response;
+                playAudio(data.speech);
+            } else {
+                console.error('Fehler bei der Anfrage');
+            }
+        }
+
+        function playAudio(base64String) {
+            const audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.src = `data:audio/mp3;base64,${base64String}`;
+            audioPlayer.play();
+        }
+
+        // Video beim Laden der Seite starten
+        startVideo();
+    });
+</script>
+<style><script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+
+        navigator.mediaDevices.getUserMedia({video: true})
+            .then(stream => video.srcObject = stream)
+            .catch(console.error);
+
+        window.generateResponse = async function () {
+            const prompt = document.getElementById('promptInput').value;
+            let image = '';
+            if (document.getElementById('includeVideoCheckbox').checked) {
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                image = canvas.toDataURL('image/png');
+            }
+            const response = await fetch('http://127.0.0.1:5000/api/post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({prompt: prompt, image_base64: image}),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                document.getElementById('responseText').innerText = data.response;
+                playAudio(data.speech);
+            } else {
+                console.error('Fehler bei der Anfrage');
+            }
+        }
+
+        function playAudio(base64String) {
+            const audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.src = `data:audio/mp3;base64,${base64String}`;
+            audioPlayer.play();
+        }
+    });
+</script>
+  #loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    position: fixed; /* Damit der Loader immer im Sichtfeld bleibt */
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; /* Stellt sicher, dass der Loader über anderen Inhalten angezeigt wird */
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
+
+
+</body>
+</html>

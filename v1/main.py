@@ -17,7 +17,7 @@ nest_asyncio.apply()
 
 
 def load_config():
-    with open('static/config.json', 'r') as f:
+    with open('../static/config.json', 'r') as f:
         return json.load(f)
 
 
@@ -194,7 +194,7 @@ def generate_text():
     response = handle_special_commands(translated_text)
     if response:
         return response
-    firebase_db = FirebaseRealtimeDB('./static/config.json')
+    firebase_db = FirebaseRealtimeDB('../static/config.json')
     print(f"Current temperature: {temperature}")
     generated_text = model.generate(translated_text, temp=temperature, max_tokens=1000)
     print(generated_text)
