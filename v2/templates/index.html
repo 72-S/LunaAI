@@ -72,48 +72,7 @@
         startVideo();
     });
 </script>
-<style><script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const context = canvas.getContext('2d');
-
-        navigator.mediaDevices.getUserMedia({video: true})
-            .then(stream => video.srcObject = stream)
-            .catch(console.error);
-
-        window.generateResponse = async function () {
-            const prompt = document.getElementById('promptInput').value;
-            let image = '';
-            if (document.getElementById('includeVideoCheckbox').checked) {
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                image = canvas.toDataURL('image/png');
-            }
-            const response = await fetch('http://127.0.0.1:5000/api/post', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({prompt: prompt, image_base64: image}),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log(data);
-                document.getElementById('responseText').innerText = data.response;
-                playAudio(data.speech);
-            } else {
-                console.error('Fehler bei der Anfrage');
-            }
-        }
-
-        function playAudio(base64String) {
-            const audioPlayer = document.getElementById('audioPlayer');
-            audioPlayer.src = `data:audio/mp3;base64,${base64String}`;
-            audioPlayer.play();
-        }
-    });
-</script>
+<style>
   #loader {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3498db; /* Blue */

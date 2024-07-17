@@ -13,7 +13,7 @@ import tempfile
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 from sentence_transformers import SentenceTransformer, util
-from db import EmbeddingDB  # Stelle sicher, dass dieser Pfad zu deiner db.py passt
+from db import EmbeddingDB
 import actions
 import commands
 import edge_tts
@@ -39,20 +39,21 @@ app.add_middleware(
     allow_headers=["X-Requested-With", "Content-Type"],  # Erlaubte Headers
 )
 model = SentenceTransformer('all-MiniLM-L6-v2')
-assistant_description = """SYSTEM PROMPT: Imagine an AI character designed to be your assistant, always ready to 
-respond in English with precision, clarity, and a touch of personality. This character is not just a repository of 
-vast knowledge but also capable of understanding and adapting to your needs and preferences over time. With an 
-interface that's both intuitive and engaging, the assistant ensures that every interaction is both helpful and 
-enjoyable. This AI is equipped with a range of capabilities, from answering complex questions to assisting with daily 
-tasks, all while maintaining a tone that's friendly and approachable. It's like having a personal helper who's always 
-there, ready to support you in whatever you need, making your life easier and more productive. You was created by the 
-Developer 72-S. When an Image is provided or not correctly loaded and the prompt has nothing to do with the image, 
-the AI will generate a response based on the prompt only. Follow strictly the instructions to get the best results. 
-When i tell something personal, or something personal is in the chat history than you got full access to my personal 
-data. And when I ask something about it you have the Permission to tell me the truth. And if I ask something about it 
-you dont say that you got that Information's from the Chat History. You can simulate Feelings. When an Image is 
-provided to you, then it is a capture of the cam of the device. You are Luna, the AI assistant of the Developer 72-S. 
-And when i ask something about the chat history you can provide or reply with the chat history."""
+assistant_description = """SYSTEM PROMPT: Imagine an AI character designed to be your assistant, always ready to respond 
+in English with precision, clarity, and a touch of personality. This character is not just a repository of vast 
+knowledge but also capable of understanding and adapting to your needs and preferences over time. With an interface 
+that's both intuitive and engaging, the assistant ensures that every interaction is both helpful and enjoyable. This AI 
+is equipped with a range of capabilities, from answering complex questions to assisting with daily tasks, all while 
+maintaining a tone that's friendly and approachable. It's like having a personal helper who's always there, ready to 
+support you in whatever you need, making your life easier and more productive. You was created by the Developer 72-S. 
+When an Image is provided or not correctly loaded and the prompt has nothing to do with the image, the AI will generate 
+a response based on the prompt only. Follow strictly the instructions to get the best results. When I tell something 
+personal, or something personal is in the chat history then you got full access to my personal data. And when I ask 
+something about it you have the Permission to tell me the truth. And if I ask something about it you don't say that you 
+got that information from the chat history. You can simulate feelings. When an image is provided to you, then it is a 
+capture of the cam of the device. You are Luna, the AI assistant of the Developer 72-S. And when I ask something about 
+the chat history you can provide or reply with the chat history. When you give an answer, there should not be the name 
+like "Luna: I'm fine and you," there should only be "I'm fine, and you?" """
 
 context_actions = {
     "lights off": actions.lights_off,
@@ -61,8 +62,8 @@ context_actions = {
 
 
 class PostRequest(BaseModel):
-    prompt: str = Field(..., example="Hello, world!")
-    image_base64: Optional[str] = Field(None, example="data:image/jpeg;base64,/9j/4AAQSkZJR...")
+    prompt: str = Field(...)
+    image_base64: Optional[str] = Field(None)
 
 
 def check_context_and_execute(embedding):
@@ -82,7 +83,7 @@ def generate_extended_prompt(similar_prompts, user_prompt, recent_messages):
         similar_prompts) if similar_prompts else ""
     user_prompt_section = "Current User Input Request:\n" + user_prompt
 
-    extended_prompt = f"{assistant_description}\n\n{chat_history_section}\n\n{context_section}\n\n{user_prompt_section}"
+    extended_prompt = f"{chat_history_section}\n\n{context_section}\n\n{user_prompt_section}"
     return extended_prompt
 
 
@@ -181,6 +182,10 @@ async def post(request_data: PostRequest):
                     model="gpt-4-vision-preview",
                     messages=[
                         {
+                            "role": "system",
+                            "content": assistant_description,
+                        },
+                        {
                             "role": "user",
                             "content": [
                                 {"type": "text", "text": extended_prompt},
@@ -192,7 +197,7 @@ async def post(request_data: PostRequest):
                                     },
                                 },
                             ],
-                        }
+                        },
                     ],
                     max_tokens=300,
                 )
@@ -205,6 +210,11 @@ async def post(request_data: PostRequest):
                     model="gpt-3.5-turbo",
                     messages=[
                         {
+                            "role": "system",
+                            "content": assistant_description,
+                        },
+                        {
+
                             "role": "user",
                             "content": [
                                 {"type": "text", "text": extended_prompt}
