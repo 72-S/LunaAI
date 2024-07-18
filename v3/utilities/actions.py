@@ -1,6 +1,5 @@
 import requests
 from v3 import server
-
 def generate_prompt(return_message):
     return """You are required to generate a sentence for the user as they have successfully executed a command, 
     incorporating a description of the command. COMMAND DESCRIPTION: """ + return_message
@@ -50,3 +49,17 @@ def search_web(query):
     except Exception as e:
         print(f"Error during web search: {e}")
         return {"error": str(e)}
+
+
+def get_weather(query):
+    BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?q=' + query + ',&units=metric&appid=' + server.openweathermap_key
+    response = requests.get(BASE_URL)
+    print(response.status_code)
+    if response.status_code == 200:
+        return response.text
+    else:
+        return None
+
+
+def get_date_time():
+    return server.datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

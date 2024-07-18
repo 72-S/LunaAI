@@ -4,8 +4,9 @@ import edge_tts
 
 
 async def generate_speech(text):
+    clean_text = text.replace("*", " ")
     voice = "en-GB-SoniaNeural"
-    communicate = edge_tts.Communicate(text, voice)
+    communicate = edge_tts.Communicate(clean_text, voice)
     with tempfile.NamedTemporaryFile(delete=True) as temp_file:
         await communicate.save(temp_file.name)
         temp_file.seek(0)

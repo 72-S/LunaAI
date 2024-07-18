@@ -143,7 +143,7 @@ async def post(request_data: PostRequest):
     global text_response
     prompt = request_data.prompt
     image64 = request_data.image_base64
-    db = EmbeddingDB('embeddings.db')
+    db = EmbeddingDB('messages.db.bak')
     response_data = {'prompt': prompt}
     prompt_embedding = model.encode(prompt, convert_to_tensor=True).cpu().numpy()
     is_command, parsed_prompt = commands.parse_commands(prompt)
