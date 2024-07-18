@@ -7,7 +7,6 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
-from sentence_transformers import SentenceTransformer
 from db import EmbeddingDB
 from pydantic import BaseModel, Field
 from typing import Optional
@@ -97,9 +96,6 @@ async def post(request_data: PostRequest):
     translated_prompt = translate.translate_text(prompt)
     response_data = {'prompt': translated_prompt}
 
-    # Initialize the SentenceTransformer model
-    model = SentenceTransformer('all-MiniLM-L6-v2')
-    query_embedding = model.encode(translated_prompt)
 
     # Consolidate and include the entire conversation history
     conversation_history = db.retrieve_recent_chat_messages(limit=60)
