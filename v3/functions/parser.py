@@ -1,15 +1,15 @@
 import ipaddress
 
-from v3.utilities import actions
+from v3 import utilities
 
 context_actions = {
-    "lights_off": actions.lights_off,
-    "lights_on": actions.lights_on,
-    "set_brightness": actions.set_brightness,
-    "set_color": actions.set_color,
-    "search_internet": actions.search_web,
-    "get_weather": actions.get_weather,
-    "get_date_time": actions.get_date_time,
+    "lights_off": utilities.actions.lights_off,
+    "lights_on": utilities.actions.lights_on,
+    "set_brightness": utilities.actions.set_brightness,
+    "set_color": utilities.actions.set_color,
+    "search_internet": utilities.actions.search_web,
+    "get_weather": utilities.actions.get_weather,
+    "get_date_time": utilities.actions.get_date_time,
 }
 
 color_dict = {
