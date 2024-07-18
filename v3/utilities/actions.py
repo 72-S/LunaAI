@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import requests
 from v3 import server
 def generate_prompt(return_message):
@@ -62,4 +64,4 @@ def get_weather(query):
 
 
 def get_date_time():
-    return server.datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")

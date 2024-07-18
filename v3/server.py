@@ -73,7 +73,7 @@ Additionally, you can get the current weather with the function get_weather. Inc
 For example, to get the weather in New York, your response should include $%get_weather,New York$%. Ensure that we 
 use the Metric System for the temperature. The default city is Waakirchen.
 
-You also can use the function get_date_time to get the current date and time."""
+You also can use the function get_date_time to get the current date and time. If you get any data in JSON you should respond with a normal message with the extracted content!!!"""
 
 
 
