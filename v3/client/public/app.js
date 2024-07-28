@@ -56,7 +56,7 @@ const mat = new THREE.ShaderMaterial({
 });
 
 const geo = new THREE.IcosahedronGeometry(4, 30);
-const mesh = new THREE.Mesh(geo, mat);
+const mesh = new THREE.Points(geo, mat);
 scene.add(mesh);
 
 const listener = new THREE.AudioListener();
