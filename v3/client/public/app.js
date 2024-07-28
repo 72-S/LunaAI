@@ -13,12 +13,12 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 const params = {
-    red: 1.0,
-    green: 1.0,
-    blue: 1.0,
-    threshold: 0.5,
-    strength: 0.5,
-    radius: 0.8
+    red: 0.9,
+    green: 0.55,
+    blue: 0.99,
+    threshold: 0.4,
+    strength: 0.6,
+    radius: 0.3
 }
 
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -164,6 +164,9 @@ function animate() {
     uniforms.u_time.value = clock.getElapsedTime();
     uniforms.u_frequency.value = analyser.getAverageFrequency();
     bloomComposer.render();
+    uniforms.u_blue.value = params.blue;
+    uniforms.u_red.value = params.red;
+    uniforms.u_green.value = params.green;
     requestAnimationFrame(animate);
 }
 animate();
