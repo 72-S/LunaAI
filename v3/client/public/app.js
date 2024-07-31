@@ -12,14 +12,26 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
+const values = {
+    radius: 4,
+    time_multiplier: 0.2,
+    target_time_multiplier: 0.2, // Add target time multiplier
+}
+
 const params = {
     red: 0.9,
     green: 0.55,
     blue: 0.99,
     threshold: 0.4,
     strength: 0.6,
-    radius: 0.3
+    bloom_radius: 0.3,
+    detail: 15,
 }
+
+let isActivated = false;
+let finalTranscript = "";
+let recognition = new webkitSpeechRecognition();
+
 
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -28,7 +40,7 @@ const renderScene = new RenderPass(scene, camera);
 const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight));
 bloomPass.threshold = params.threshold;
 bloomPass.strength = params.strength;
-bloomPass.radius = params.radius;
+bloomPass.radius = params.bloom_radius;
 
 const bloomComposer = new EffectComposer(renderer);
 bloomComposer.addPass(renderScene);
@@ -55,9 +67,13 @@ const mat = new THREE.ShaderMaterial({
     wireframe: true
 });
 
-const geo = new THREE.IcosahedronGeometry(4, 30);
-const mesh = new THREE.Points(geo, mat);
+const geo = new THREE.IcosahedronGeometry(values.radius, params.detail);
+
+const mesh = new THREE.Mesh(geo, mat);
 scene.add(mesh);
+
+const points = new THREE.Points(geo, mat);
+scene.add(points);
 
 const listener = new THREE.AudioListener();
 camera.add(listener);
@@ -85,8 +101,18 @@ bloomFolder.add(params, 'threshold', 0, 1).onChange(function (value) {
 bloomFolder.add(params, 'strength', 0, 3).onChange(function (value) {
     bloomPass.strength = Number(value);
 });
-bloomFolder.add(params, 'radius', 0, 1).onChange(function (value) {
+bloomFolder.add(params, 'bloom_radius', 0, 1).onChange(function (value) {
     bloomPass.radius = Number(value);
+});
+
+gui.add(params, 'detail', 1, 30).step(1).onChange(function (value) {
+    scene.remove(mesh);
+    scene.remove(points);
+    const newGeo = new THREE.IcosahedronGeometry(4, value);
+    mesh.geometry = newGeo;
+    points.geometry = newGeo;
+    scene.add(mesh);
+    scene.add(points);
 });
 
 let mouseX = 0;
@@ -118,8 +144,7 @@ async function sendToApi(prompt) {
             throw new Error('Network response was not ok');
         }
 
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('Error sending request to API:', error);
         return { response: 'Error connecting to API.', speech: '' };
@@ -133,7 +158,24 @@ async function playAudioFromApi(prompt) {
     if (audioBase64) {
         const audioBuffer = await decodeAudioBase64(audioBase64);
         sound.setBuffer(audioBuffer);
+        sound.stop();
         sound.play();
+
+        sound.onEnded = function() {
+            console.log("Audio has ended");
+            values.target_time_multiplier = 0.2; // Change the target value
+
+            let resetTimeout = setTimeout(() => {
+                values.time_multiplier = 0.2;
+                isActivated = false; // Reset activation state
+            }, 6000); // Continue listening for 3 seconds
+
+            // Clear the timeout if new speech is detected during the 3-second window
+            recognition.onresult = function (event) {
+                clearTimeout(resetTimeout);
+                handleSpeechResult(event);
+            };
+        };
     }
 }
 
@@ -157,18 +199,45 @@ document.getElementById('send-prompt').addEventListener('click', function () {
     playAudioFromApi(prompt);
 });
 
+let lastFrequency = 0;
+const alpha = 0.3;
+
+function lowPassFilter(currentValue, previousValue, alpha) {
+    return alpha * currentValue + (1 - alpha) * previousValue;
+}
+
+function lerp(a, b, t) {
+    return a + (b - a) * t;
+}
+
 function animate() {
-    camera.position.x += (mouseX - camera.position.x) * .05;
+    // Camera movement
+    camera.position.x += (mouseX - camera.position.x) * 0.05;
     camera.position.y += (-mouseY - camera.position.y) * 0.5;
     camera.lookAt(scene.position);
-    uniforms.u_time.value = clock.getElapsedTime();
-    uniforms.u_frequency.value = analyser.getAverageFrequency();
+
+    // Get the average frequency from the audio analyser
+    const averageFrequency = analyser.getAverageFrequency();
+
+    const smoothedFrequency = lowPassFilter(averageFrequency / 256, lastFrequency, alpha);
+    lastFrequency = smoothedFrequency;
+
+    // Smoothly transition the time_multiplier towards the target_time_multiplier
+    values.time_multiplier = lerp(values.time_multiplier, values.target_time_multiplier, 0.05);
+
+    // Update shader uniforms
+    uniforms.u_time.value = clock.getElapsedTime() * values.time_multiplier;
+    uniforms.u_frequency.value = smoothedFrequency; // Normalize frequency data
+    uniforms.u_blue.value = params.blue + (averageFrequency / 256) / 0.6;
+    uniforms.u_red.value = params.red + (averageFrequency / 256) * 0.1;
+    uniforms.u_green.value = params.green + (averageFrequency / 256) * 0.1;
+
+    // Render the scene with bloom effect
     bloomComposer.render();
-    uniforms.u_blue.value = params.blue;
-    uniforms.u_red.value = params.red;
-    uniforms.u_green.value = params.green;
+
     requestAnimationFrame(animate);
 }
+
 animate();
 
 window.addEventListener('resize', function () {
@@ -176,4 +245,65 @@ window.addEventListener('resize', function () {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     bloomComposer.setSize(window.innerWidth, window.innerHeight);
+});
+
+function handleSpeechResult(event) {
+
+    let interimTranscript = "";
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+        } else {
+            interimTranscript += event.results[i][0].transcript;
+        }
+    }
+
+    if (
+        (interimTranscript.includes("hey Luna") ||
+            interimTranscript.includes("Luna")) &&
+        !isActivated
+    ) {
+        console.log("Speak Now!");
+        isActivated = true;
+        values.target_time_multiplier = 1.2;
+        finalTranscript = "";
+    }
+
+    if (isActivated && finalTranscript) {
+        // Remove the activation word from the final transcript
+        finalTranscript = finalTranscript.replace(/hey Luna|Luna/gi, "").trim();
+
+        if (finalTranscript) {
+            // Only send if there's text after the activation word
+            console.log("Input:", finalTranscript);
+
+            // Send the finalTranscript to your API
+            playAudioFromApi(finalTranscript);
+
+            finalTranscript = "";
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "de-DE"; // Deutsch
+
+    let isActivated = false;
+    let finalTranscript = "";
+
+    recognition.onresult = function (event) {
+        handleSpeechResult(event);
+    };
+
+    recognition.onerror = function (event) {
+        console.error("Error:", event.error);
+    };
+
+    recognition.onend = function () {
+        recognition.start(); // Restart recognition
+    };
+
+    recognition.start();
 });

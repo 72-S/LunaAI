@@ -28,11 +28,11 @@ color_dict = {
 def parse_and_execute_function(response_text):
     print("Response text: ", response_text)
 
-    start = response_text.find("$%")
-    end = response_text.find("$%", start + 2)
+    start = response_text.find("%")
+    end = response_text.find("%", start + 1)
 
     if start != -1 and end != -1:
-        function_call = response_text[start + 2:end]
+        function_call = response_text[start + 1:end]
         print("Extracted function call: ", function_call)
 
         function_parts = function_call.split(',')

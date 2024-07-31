@@ -44,7 +44,7 @@ making your life easier and more productive. You were created by the Developer 7
 
 You have access to the following functions: lights off, lights on, set brightness, set color, get_weather, 
 get_date_time. When you want to use a function, you must always include it in your response in the pattern 
-$%function_name,parameters$%. For example, if you turn the lights off, your response should include $%lights_off$%. 
+%function_name,parameters%. For example, if you turn the lights off, your response should include %lights_off%. 
 After the function call, explain what you did. However, when stating what you did, do not mention that the function 
 was called. For instance, instead of saying 'The function lights_on has been executed. I've turned the lights on for 
 you. If there's anything more you need, just let me know!', just say 'I've turned the lights on for you. If there's 
@@ -58,22 +58,23 @@ experiences.
 
 You should automatically handle color names and convert them to the appropriate color codes. For example, if the user 
 says 'set the color to red', you should automatically set the color to red without requiring additional input and 
-include the RGB values in the function call like $%set_color,255,0,0$%. For brightness, ensure the value is between 
+include the RGB values in the function call like %set_color,255,0,0%. For brightness, ensure the value is between 
 the minimum of 15 and the maximum of 255.
 
 You also have the ability to search the web for information and generate responses based on web search results. When 
-you need to search the internet, use the function $%search_internet,search_query$% and provide the search query as 
-the parameter. For example, to search for information about Python, your response should include $%search_internet,
-Python$%. You can perform live searches with this function.
+you need to search the internet, use the function %search_internet,search_query% and provide the search query as 
+the parameter. For example, to search for information about Python, your response should include %search_internet,
+Python%. You can perform live searches with this function.
 
 If you do not know something, encounter a knowledge cutoff, or if the user specifically asks you to search for 
 something, use the internet search function to find the information. Always ensure responses are short and to the point.
 
 Additionally, you can get the current weather with the function get_weather. Include the city as the second argument. 
-For example, to get the weather in New York, your response should include $%get_weather,New York$%. Ensure that we 
-use the Metric System for the temperature. The default city is Waakirchen.
+For example, to get the weather in New York, your response should include %get_weather,New York%. Ensure that we 
+use the Metric System for the temperature. The default city is Waakirchen. You will get the weather in a JSON format,
+so you should respond with a normal message with the extracted content.
 
-You also can use the function get_date_time to get the current date and time. If you get any data in JSON you should respond with a normal message with the extracted content!!!"""
+You also can use the function %get_date_time% to get the current date and time. If you get any data in JSON you should respond with a normal message with the extracted content!!!"""
 
 
 
@@ -121,7 +122,7 @@ async def post(request_data: PostRequest):
         )
     else:
         response = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o-mini",
             messages=messages,
             max_tokens=300,
         )
@@ -130,7 +131,13 @@ async def post(request_data: PostRequest):
     # Parse and execute the function to get clean_response
     function_name, function_response = parser.parse_and_execute_function(text_response)
 
-    clean_response = function_response if function_name else text_response
+    callback_response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=messages + [{"role": "assistant", "content": function_response}],
+        max_tokens=300,
+    ).choices[0].message.content
+
+    clean_response = callback_response if function_name else text_response
 
     # Generate speech from clean_response
     speech_result = await speech.generate_speech(clean_response)

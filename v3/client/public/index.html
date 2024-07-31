@@ -24,6 +24,7 @@
 </div>
 <script id="vertexshader" type="vertex">
     uniform float u_time;
+    uniform float u_frequency;
     varying vec3 vColor;
     varying vec3 vNormal;
     varying vec3 vPosition;
@@ -129,7 +130,7 @@
 
         // Generate a smooth noise-based time factor for gradual random speed variations
         float noiseTime = cnoise(vec3(u_time * 0.05, 0.0, 0.0)) * 0.5 + 0.5; // Lower frequency for smoother transitions
-        float time = u_time * (0.15 + 0.05 * noiseTime); // Base speed with slight variations
+        float time = u_time * (0.10 + 0.05 * noiseTime); // Base speed with slight variations
 
         // Large deformations
         float deformX = largeDeform(position.x, position.y, position.z, time);
@@ -147,8 +148,13 @@
         float tinyDeform = cnoise(position * 0.5 + vec3(time));
         vec3 tinyDisplacement = normal * tinyDeform * 1.1;
 
+        //Speak deformation with u_frequency with aggresive perlin noise
+        float speakDeform = cnoise(position * u_frequency + vec3(time));
+        vec3 speakDisplacement = normal * speakDeform * 1.5;
+
         // Combine large, small, and tiny deformations
-        vec3 newPosition = position + largeDisplacement + smallDisplacement + tinyDisplacement;
+        vec3 newPosition = position + largeDisplacement + smallDisplacement + tinyDisplacement + speakDisplacement;
+
 
         gl_PointSize = 5.0;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
